@@ -3,7 +3,14 @@ csv_trimming
 |travis| |sonar_quality| |sonar_maintainability| |codacy|
 |code_climate_maintainability| |pip| |downloads|
 
-Package python to remove common ugliness from a csv-like file
+Package python to remove common ugliness from a csv-like file.
+
+Sometimes when working with CSVs that are exported from excel
+or generally from software that do not primarily focus
+on exporting well formatted CSVs, CSV files are exported
+with empty columns or padding around.
+
+This package is to fix that kind of issues.
 
 How do I install this package?
 ----------------------------------------------
@@ -43,12 +50,12 @@ Package python to remove common ugliness from a csv-like file
     :target: https://coveralls.io/github/LucaCappelletti94/csv_trimming?branch=master
     :alt: Coveralls Coverage
 
-.. |pip| image:: https://badge.fury.io/py/csv_trimming.svg
-    :target: https://badge.fury.io/py/csv_trimming
+.. |pip| image:: https://badge.fury.io/py/csv-trimming.svg
+    :target: https://badge.fury.io/py/csv-trimming
     :alt: Pypi project
 
-.. |downloads| image:: https://pepy.tech/badge/csv_trimming
-    :target: https://pepy.tech/badge/csv_trimming
+.. |downloads| image:: https://pepy.tech/badge/csv-trimming
+    :target: https://pepy.tech/badge/csv-trimming
     :alt: Pypi total project downloads
 
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/0968ff39b133475da3a9c528b8ae2c9d
