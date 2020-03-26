@@ -1,0 +1,11 @@
+MANIFEST.in
+README.rst
+setup.py
+csv_trimming/__init__.py
+csv_trimming/__version__.py
+csv_trimming/trim.py
+csv_trimming.egg-info/PKG-INFO
+csv_trimming.egg-info/SOURCES.txt
+csv_trimming.egg-info/dependency_links.txt
+csv_trimming.egg-info/requires.txt
+csv_trimming.egg-info/top_level.txt

@@ -59,6 +59,9 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     tests_require=test_deps,
     # Add here the package dependencies
-    install_requires=[],
+    install_requires=[
+        "pandas",
+        "italian_csv_type_prediction"
+    ],
     extras_require=extras,
 )
