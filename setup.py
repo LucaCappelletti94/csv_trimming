@@ -61,6 +61,8 @@ setup(
     # Add here the package dependencies
     install_requires=[
         "pandas",
+        "scipy",
+        "numpy",
         "italian_csv_type_prediction"
     ],
     extras_require=extras,
