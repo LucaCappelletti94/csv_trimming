@@ -87,7 +87,7 @@ def trim_spaces(csv):
 
 def restore_true_nan(csv: pd.DataFrame):
     nan_mask = is_na(csv)
-    return csv.where(nan_mask, other=np.nan)
+    return csv.where(np.logical_not(nan_mask))
 
 
 def trim_csv(csv: pd.DataFrame):
