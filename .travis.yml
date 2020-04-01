@@ -3,6 +3,9 @@ sudo: false
 git:
   depth: false
 addons:
+  apt:
+    packages:
+      - language-pack-it
   sonarcloud:
     organization: lucacappelletti94-github
     token:
