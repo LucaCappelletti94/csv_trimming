@@ -29,7 +29,7 @@ def _trim_padding(csv: pd.DataFrame) -> pd.DataFrame:
     rows_threshold = np.logical_not(nan_mask).sum(axis=1).mean()/2
     rows_mask = mask_edges(np.logical_not(
         nan_mask).sum(axis=1) < rows_threshold)
-    columns_mask = mask_edges(nan_mask.all(axis=0))
+    columns_mask = mask_edges(nan_mask.all(axis=0).values)
     return csv[~rows_mask][csv.columns[~columns_mask]]
 
 
