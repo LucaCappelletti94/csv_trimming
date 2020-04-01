@@ -1,20 +1,13 @@
 import pandas as pd
 import numpy as np
-from italian_csv_type_prediction import predict_types
+from italian_csv_type_prediction import TypePredictor
+from italian_csv_type_prediction.simple_types.nan_type import NaNType
 from scipy.ndimage import gaussian_filter
 from scipy.stats import mode
 
 
-def is_na(csv: pd.DataFrame):
-    """Return mask of NaN values"""
-    return gaussian_filter(
-        np.array([
-            predict_types(column)
-            for column in csv.values.T
-        ]).T == "NaN",
-        sigma=0.1,
-        order=2
-    )
+def is_na(df: pd.DataFrame):
+    return df.applymap(NaNType().validate)
 
 
 def mask_edges(mask: np.ndarray):
@@ -48,25 +41,24 @@ def trim_padding(csv):
     return csv
 
 
-def type_modes(csv: pd.DataFrame):
-    return mode(np.array([
-        predict_types(column)
-        for column in csv.values.T
-    ]), axis=1).mode.flatten()
-
-
-def restore_nan_columns(csv: pd.DataFrame):
-    csv.columns = [
-        pred if pd.isna(col) else col
-        for col, pred in zip(csv.columns, type_modes(csv))
-    ]
-
-
 def restore_header(csv: pd.DataFrame) -> pd.DataFrame:
     new_header = csv.iloc[0]  # grab the first row for the header
+
+    new_sanitized_header = []
+    nan_values_count = 0
+    for value in new_header:
+        if pd.isna(value):
+            new_sanitized_header.append("column {}".format(nan_values_count))
+            nan_values_count += 1
+            continue
+
+        while value in new_sanitized_header:
+            value = "{}.duplicated".format(value)
+
+        new_sanitized_header.append(value)
+
     csv = csv[1:]  # take the data less the header row
-    csv.columns = new_header  # set the header row as the csv header
-    restore_nan_columns(csv)
+    csv.columns = new_sanitized_header  # set the header row as the csv header
     return csv
 
 
@@ -77,8 +69,8 @@ def drop_empty_columns(csv: pd.DataFrame) -> pd.DataFrame:
 
 def deep_strip(string: str):
     for char in ("\n\r", "\n", " "):
-        string = " ".join(string.strip().split(char))
-    return string
+        string = " ".join(string.split(char))
+    return string.strip()
 
 
 def trim_spaces(csv):
@@ -86,7 +78,7 @@ def trim_spaces(csv):
 
 
 def restore_true_nan(csv: pd.DataFrame):
-    nan_mask = is_na(csv)
+    nan_mask = TypePredictor().predict_dataframe(csv) == "NaN"
     return csv.where(np.logical_not(nan_mask))
 
 
@@ -94,8 +86,8 @@ def trim_csv(csv: pd.DataFrame):
     csv = trim_spaces(csv)
     csv = trim_padding(csv)
     csv = restore_header(csv)
-    csv = drop_empty_columns(csv)
     csv = restore_true_nan(csv)
+    csv = drop_empty_columns(csv)
     csv = csv.reset_index(drop=True)
     csv.index.name = None
     csv.columns.name = None
