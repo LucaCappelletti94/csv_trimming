@@ -34,7 +34,8 @@ test_deps =[
     "coveralls",
     "validate_version_code",
     "codacy-coverage",
-    "random_csv_generator"
+    "random_csv_generator",
+    "ugly_csv_generator"
 ]
 
 extras = {
