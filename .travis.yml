@@ -6,6 +6,12 @@ addons:
   apt:
     packages:
       - language-pack-it
+      - curl
+      - autoconf
+      - automake
+      - libtool
+      - python-dev
+      - pkg-config
   sonarcloud:
     organization: lucacappelletti94-github
     token:
@@ -15,6 +21,8 @@ python:
 - '3.6'
 before_install:
 - pip install --upgrade pytest
+- curl https://raw.githubusercontent.com/LucaCappelletti94/italian_csv_type_prediction/master/setup.sh | sudo sh
+- sudo ldconfig
 install:
 - pip install .[test]
 before_script:
