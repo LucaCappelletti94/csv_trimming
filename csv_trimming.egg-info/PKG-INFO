@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: csv-trimming
-Version: 1.0.4
+Version: 1.0.5
 Summary: Package python to remove common ugliness from a csv-like file
 Home-page: https://github.com/LucaCappelletti94/csv_trimming
 Author: LucaCappelletti94
