@@ -8,3 +8,4 @@ __pycache__
 \.vscode/
 .notipy.json
 .ipynb_checkpoints
+htmlcov

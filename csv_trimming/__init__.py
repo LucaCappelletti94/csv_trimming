@@ -1,5 +1,5 @@
-from .trim import trim_csv
+from .trim import CSVTrimmer
 
 __all__ = [
-    "trim_csv"
+    "CSVTrimmer"
 ]
