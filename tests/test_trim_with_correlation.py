@@ -1,6 +1,5 @@
 import pandas as pd
 from csv_trimming import CSVTrimmer
-from italian_csv_type_prediction.simple_types.nan_type import NaNType
 
 
 def correlation_callback(current_row: pd.DataFrame, next_row: pd.DataFrame) -> bool:
