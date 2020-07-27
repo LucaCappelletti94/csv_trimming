@@ -66,7 +66,7 @@ class CSVTrimmer:
         nan_mask = csv.applymap(self._nan_type.validate)
         rows_threshold = np.logical_not(nan_mask).sum(axis=1).mean()/2
         rows_mask = self._mask_edges(
-            np.logical_not(nan_mask).sum(axis=1).values < rows_threshold
+            (~nan_mask).sum(axis=1).values < rows_threshold
         )
         columns_mask = self._mask_edges(
             nan_mask.all(axis=0).values
