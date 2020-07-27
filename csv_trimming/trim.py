@@ -60,15 +60,18 @@ class CSVTrimmer:
         -------------------------------
         DataFrame wthout empty or near-empty border columns.
         """
-        old_shape = None
-        while csv.shape != old_shape:
-            old_shape = csv.shape
-            nan_mask = csv.applymap(self._nan_type.validate)
-            rows_threshold = np.logical_not(nan_mask).sum(axis=1).mean()/2
-            rows_mask = self._mask_edges(np.logical_not(
-                nan_mask).sum(axis=1) < rows_threshold)
-            columns_mask = self._mask_edges(nan_mask.all(axis=0).values)
-            csv = csv[~rows_mask][csv.columns[~columns_mask]]
+        #old_shape = None
+        #while csv.shape != old_shape:
+        #old_shape = csv.shape
+        nan_mask = csv.applymap(self._nan_type.validate)
+        rows_threshold = np.logical_not(nan_mask).sum(axis=1).mean()/2
+        rows_mask = self._mask_edges(
+            np.logical_not(nan_mask).sum(axis=1).values < rows_threshold
+        )
+        columns_mask = self._mask_edges(
+            nan_mask.all(axis=0).values
+        )
+        csv = csv[~rows_mask][csv.columns[~columns_mask]]
         return csv
 
     def restore_header(self, csv: pd.DataFrame) -> pd.DataFrame:
