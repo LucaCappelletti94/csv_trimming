@@ -9,3 +9,5 @@ __pycache__
 .notipy.json
 .ipynb_checkpoints
 htmlcov
+DONOTUPLOAD.csv
+test_do_not_upload.py

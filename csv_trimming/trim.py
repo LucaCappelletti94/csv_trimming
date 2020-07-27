@@ -42,7 +42,10 @@ class CSVTrimmer:
         for right, val in enumerate(np.flip(mask, axis=0)):
             if not val:
                 break
-        mask[left:-right] = False
+        if right == 0:
+            mask[left:] = False
+        else:
+            mask[left:-right] = False
         return mask
 
     def trim_padding(self, csv: pd.DataFrame) -> pd.DataFrame:
