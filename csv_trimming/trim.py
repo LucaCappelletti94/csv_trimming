@@ -124,6 +124,21 @@ class CSVTrimmer:
         nan_mask = csv.applymap(self._nan_type.validate).all(axis=0)
         return csv[csv.columns[~nan_mask]]
 
+    def drop_empty_rows(self, csv: pd.DataFrame) -> pd.DataFrame:
+        """Return DataFrame with removed empty columns.
+
+        Parameters
+        ---------------------------
+        csv: pd.DataFrame,
+            DataFrame where to drop the empty columns.
+
+        Returns
+        ---------------------------
+        DataFrame without empty columns.
+        """
+        nan_mask = csv.applymap(self._nan_type.validate).all(axis=1)
+        return csv[~nan_mask]
+
     def _deep_strip(self, string: str):
         """Return string without continuos spaces.
 
@@ -211,6 +226,9 @@ class CSVTrimmer:
             else:
                 new_rows.append(current_row)
 
+        if not skip_row:
+            new_rows.append(csv.iloc[-1])
+
         return pd.DataFrame(new_rows)
 
     def trim(self, csv: pd.DataFrame) -> pd.DataFrame:
@@ -227,6 +245,7 @@ class CSVTrimmer:
         """
         csv = self.trim_spaces(csv)
         csv = self.trim_padding(csv)
+        csv = self.drop_empty_rows(csv)
         csv = self.restore_header(csv)
         csv = self.restore_true_nan(csv)
 
