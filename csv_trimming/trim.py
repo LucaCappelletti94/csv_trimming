@@ -1,3 +1,4 @@
+from typing import Tuple
 import pandas as pd
 import numpy as np
 from italian_csv_type_prediction import TypePredictor
@@ -12,7 +13,7 @@ class CSVTrimmer:
 
     SPACES = "\n\r", "\n", " "
 
-    def __init__(self, correlation_callback: Callable[[pd.Series, pd.Series], bool] = None):
+    def __init__(self, correlation_callback: Callable[[pd.Series, pd.Series], Tuple[bool, pd.Series]] = None):
         """Create new CVSTrimmer object.
 
         Parameters
@@ -61,7 +62,7 @@ class CSVTrimmer:
         DataFrame wthout empty or near-empty border columns.
         """
         #old_shape = None
-        #while csv.shape != old_shape:
+        # while csv.shape != old_shape:
         #old_shape = csv.shape
         nan_mask = csv.applymap(self._nan_type.validate)
         rows_threshold = np.logical_not(nan_mask).sum(axis=1).mean()/2
@@ -192,7 +193,7 @@ class CSVTrimmer:
 
     def normalize_correlated_rows(self, csv: pd.DataFrame) -> pd.DataFrame:
         """Return normalized correlated rows.
-        
+
         Parameters
         --------------------------
         csv: pd.DataFrame,
@@ -215,16 +216,11 @@ class CSVTrimmer:
             if skip_row:
                 skip_row = False
                 continue
-            if self._correlation_callback(current_row, next_row):
-                new_rows.append(pd.concat([
-                    current_row, pd.Series({
-                        "correlated_{}".format(column): value
-                        for column, value in next_row.items()
-                    })
-                ]))
-                skip_row = True
-            else:
-                new_rows.append(current_row)
+            skip_row, result = self._correlation_callback(
+                current_row,
+                next_row
+            )
+            new_rows.append(result)
 
         if not skip_row:
             new_rows.append(csv.iloc[-1])
