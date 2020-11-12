@@ -6,6 +6,7 @@ from italian_csv_type_prediction.simple_types.nan_type import NaNType
 from scipy.ndimage import gaussian_filter
 from scipy.stats import mode
 from typing import Callable
+from .logger import logger
 
 
 class CSVTrimmer:
@@ -239,14 +240,19 @@ class CSVTrimmer:
         ----------------------------
         The cleaned up dataframe.
         """
+        logger.info("Removing extra spaces within cells.")
         csv = self.trim_spaces(csv)
+        logger.info("Removing empty space (or NaNs).")
         csv = self.trim_padding(csv)
+        logger.info("Removing empty space rows.")
         csv = self.drop_empty_rows(csv)
+        logger.info("Restoring detected header.")
         csv = self.restore_header(csv)
+        logger.info("Restoring true NaN values.")
         csv = self.restore_true_nan(csv)
-
+        logger.info("Normalizing correlated rows (if lambda is provided).")
         csv = self.normalize_correlated_rows(csv)
-
+        logger.info("Dropping empty columns.")
         csv = self.drop_empty_columns(csv)
         csv = csv.reset_index(drop=True)
         csv.index.name = None
