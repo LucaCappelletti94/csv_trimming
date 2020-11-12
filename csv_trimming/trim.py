@@ -189,7 +189,7 @@ class CSVTrimmer:
         ----------------------------
         DataFrame with restored NaN values.
         """
-        nan_mask = self._type_predictor.predict_dataframe(csv) == "NaN"
+        nan_mask = csv.applymap(self._nan_type.validate)
         return csv.where(np.logical_not(nan_mask))
 
     def normalize_correlated_rows(self, csv: pd.DataFrame) -> pd.DataFrame:
