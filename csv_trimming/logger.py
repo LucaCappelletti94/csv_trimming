@@ -1,3 +1,4 @@
+"""Submodule for setting up the logger for the csv_trimming package."""
 import sys
 import logging
 
