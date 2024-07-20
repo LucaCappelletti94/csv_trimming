@@ -14,6 +14,7 @@ def test_trim():
         csv = random_csv(
             number_of_rows=state.randint(1, 100),
             random_state=(iteration + 1) * 543678,
+            localization="us_US.UTF-8",
         )
         ugly = uglify(
             csv,
