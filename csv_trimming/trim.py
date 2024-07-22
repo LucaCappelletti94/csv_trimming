@@ -141,7 +141,7 @@ class CSVTrimmer:
 
             new_sanitized_header.append(value)
 
-        csv = csv[1:]  # take the data less the header row
+        csv = csv.iloc[1:]  # take the data less the header row
         csv.columns = new_sanitized_header  # set the header row as the csv header
         return csv
 
@@ -258,24 +258,27 @@ class CSVTrimmer:
 
         new_rows = []
         skip_row = False
+        stored_next_row = None
 
         for (_, current_row), (_, next_row) in zip(
-            csv[:-1].iterrows(), csv[1:].iterrows()
+            csv.iterrows(), csv.iloc[1:].iterrows()
         ):
             if skip_row:
                 skip_row = False
                 continue
             skip_row, result = self._correlation_callback(current_row, next_row)
             new_rows.append(result)
+            stored_next_row = next_row
 
-        if not skip_row:
-            new_rows.append(csv.iloc[-1])
+        if not skip_row and stored_next_row is not None:
+            new_rows.append(stored_next_row)
 
         return pd.DataFrame(new_rows)
 
     def trim(
         self,
         csv: pd.DataFrame,
+        restore_header: bool = True,
         drop_padding: bool = True,
         drop_duplicated_schema: bool = True,
     ) -> pd.DataFrame:
@@ -285,6 +288,8 @@ class CSVTrimmer:
         ----------------------------
         csv: pd.DataFrame,
             The dataframe to clean up.
+        restore_header: bool = True,
+            Whether to restore the header.
         drop_padding: bool = True,
             Whether to drop padding.
         drop_duplicated_schema: bool = True,
@@ -301,8 +306,9 @@ class CSVTrimmer:
             csv = self.trim_padding(csv)
         logger.info("Removing empty space rows.")
         csv = self.drop_empty_rows(csv)
-        logger.info("Restoring detected header.")
-        csv = self.restore_header(csv)
+        if restore_header:
+            logger.info("Restoring detected header.")
+            csv = self.restore_header(csv)
         logger.info("Restoring true NaN values.")
         csv = self.restore_true_nan(csv)
         logger.info("Normalizing correlated rows (if lambda is provided).")

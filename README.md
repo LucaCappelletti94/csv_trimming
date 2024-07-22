@@ -63,23 +63,60 @@ And after the trimming, it will look like this:
 Magic!
 
 ## Advanced trimming with row correlation
-Sometimes, the CSVs you are working with may have a row correlation, meaning 
+Sometimes, the CSVs you are working with may have a row correlation, meaning part of a given row is inserted in the next row. Such cases are common when the data-entry clerk wants to make the whole table fit in their screen, and in order to do so, they split the row in two. While this is clearly an extremely bad practice, it happens in the real world and the CSV Trimmer can handle it with a little help.
 
-|    |        | 0        |        | random | #RIF!   |        |          | 0       | #RIF! | #RIF! |          |        | ____   |        | #RIF! | ....  | #RIF! | ///   |        |          | #RIF! | #RIF! | 0     | #RIF! | --    |        |          | ///// |        | ////// |        |        |        |        | #RIF! | /     |        |        |        | --    | #RIF! | ///   |
-|----|--------|----------|--------|--------|---------|--------|----------|---------|-------|-------|----------|--------|--------|--------|-------|-------|-------|-------|--------|----------|-------|-------|-------|-------|-------|--------|----------|-------|--------|--------|--------|--------|--------|-------|-------|--------|--------|--------|-------|--------|--------|-------|
-| 0  |        | #RIF!    |        | random | #RIF!   |        |          | 0       | #RIF! | #RIF! |          |        | ____   |        | #RIF! | ....  | #RIF! | ///   |        |          | #RIF! | #RIF! | 0     | #RIF! | --    |        |          | ///// |        | ////// |        |        |        |        | #RIF! | /     |        |        |        | --    | #RIF! | ///   |
-| 1  |        |          | random | ..     | #RIF!   |        | /////////|         | #RIF! |       | #RIF!    | 0      | 0      | 0      | #RIF! |       | ..    | ----  | 0      | 0        |       |       | #RIF! | ..... | 0     | ...   |        | #RIF!  | .     |        |        | 0      |        |        |        | #RIF! | 0     |        | #RIF!  | 0      |        | 0      |        |        |
-| 2  |        | caso     | #RIF!  | #RIF!  |         | 0      |          |         | 0     | 0     | _____    | _      |        |        |        | 0     | 0     | ///   | 0      |          | ____  | #RIF! | 0     |       | --    |        | 0        | #RIF!  | 0     | #RIF!  | 0      |        |        | ....   | ..    |        | -------|        | #RIF!  |        | 0      | #RIF!  | 0     |
-| 3  |        | 0        | 0      | #RIF!  | 0       | ________| ........ | Tiziano   | Rossi | Verdi  | Marco  | Elena | VULGNE95E24B301X | M     | Vescovo | Caserta | 81031 | CE | 1997-03-24 | ///// | Via Verona | 5 | 80135 | Napoli | NA | VRSML97C24B301X | Eu 83.294,00 | Eu 68.537,00 | 0 | ........ | ____ | #RIF! | 0 | #RIF! | 0 | |        | |
-| 4  |        | #RIF!    | 0      | 0      | _____   | --------|          | Campania | Napoli | Villa  | Giangiacomo | Luciana | VLLGC97C24B301W | 0      | Busto Garolfo | 0    | Milano | Lombardia | 20020 | MI | 1997-03-24 | ///// | Via Epomeo | 489 | 80126 | Napoli | VLLGC97C24B301W | Eu 83.294,00 | Eu 68.537,00 | 0 | ........ | ____ | #RIF! | 0 | #RIF! | 0 | |        | |
-| 5  | ...    |          | 0      |        | ....    |        | -        | 0       | Lombardia | Bergamo | Ferrari  | Farhat | FHRFHT25C66H356T | 0      | Rivoli Veronese | #RIF! | Verona | Veneto | 37010 | VR | 1925-03-26 | ------ | Piazza Repubblica | 1 | 24050 | Zanica | BG | FHRFHT25C66H356T | Eu 4.771,00 | Eu 4.188,00 | 0 | ........ | ---- | ////// | 0 | 0 | . | #RIF! | 0 |
-| 6  | #RIF!  |          |        |        |        | 0      | ////     | --------- | Campania | Napoli | Venturelli | Francesco | VNTRNC59R29F240C | M     | Mirandola | Modena | Emilia Romagna | 41037 | MO | 1959-10-29 | 0      | Via Monteoliveto | 1 | 80135 | Napoli | VNTRNC59R29F240C | Eu 84.020,00 | Eu 80.640,00 | #RIF! |         |        | 0      | ---  | 0      |        | __ |
-| 7  | --     |          | ---------| 0 | #RIF! | ----   | 0        | Piemonte | Biella | Nocentini | Saadia | NCSDA33T48C112S | 0        | Castelfranco Di Sopra | #RIF! | Arezzo | Toscana | 52020 | AR | 1933-12-08 |        | Via Xxv Aprile | 15 | 13851 | Castelletto Cervo | BI | NCSDA33T48C112S | Eu 30.843,00 | Eu 21.587,00 | ...  | 0        | -------- | ....... |
-| 8  | #RIF!  |          |        |        | 0      |        | #RIF!    | ---------| #RIF!  | Emilia Romagna | Ravenna | Bruno | Francesca | F      | Terranova Da Sibari | Taranto | Cosenza | Calabria | 87010 | CS | 1983-11-21 | Via Matteotti | 55 | 48010 | Cotignola | RA | BRNFNC83S61L124W | Eu 46.499,00 | Eu 36.566,00 | #RIF! | ______ | #RIF! | 0 | 0 | ------ | |
-| 9  |        | 0        |        | #RIF!  | ////////| #RIF!  | 0        | Piemonte | Torino | Ricci | Mattia | RICMTT26M04I326A | M     | Sante Marie | L'Aquila | Abruzzo | 67067 | AQ | 1926-08-04 |        | Corso Re Umberto | 38 | 10128 | Torino | TO | RICMTT26M04I326A | Eu 80.583,00 | Eu 4.186,00 | 0 | #RIF! | #RIF! | ------ | 0 |
-| 10 | 0      | #RIF!    |        | 0      |        | /      | #RIF!    | Lombardia | Milano | Caruso | Sara | CRSSRA70C65H922G | F     | ...   | San Giovanni La Punta | Catania | Sicilia | 95037 | CT | 1970-03-25 | 0      | Via Giambellino | 64 | 20146 | Milano | MI | CRSSRA70C65H922G | Eu 85.595,00 | Eu 78.088,00 | 0 | ------ | 0        |        | -------- | __ |
-| 11 | 0      | #RIF!    |        | ----   | 0      | _      |          | #RIF!    | Emilia Romagna | Bologna | Piras | Sofia | PRSSFO91R59H766W | F     | San Basilio | Cagliari | Sardegna | 09040 | CA | 1991-10-19 | 0      | Via Appia | 24/B | 40026 | Imola | BO | PRSSFO91R59H766W | Eu 59.769,00 | Eu 13.577,00 |        | /////// | --     | ----- |
-| 12 | 0      | -        |        | #RIF!  |        | #RIF!  | Abruzzo | Teramo | Valentini | Giovanni | VLNGNN70P11A202N | 0      | Cologna Spiaggia | 64020 | TE | 1970-11-24 | 0      | Via Mezzina | 53 | 64020 | Cologna Spiaggia | TE | VLNGNN70P11A202N | Eu 39.475,00 | Eu 13.796,00 | #RIF! | /////// | ////// |        | #RIF! |        | #RIF! |
+You just need to provide a function that defines which rows are correlated, and the CSV Trimmer will take care of the rest. While in this example we are using a rather simple function and a relatively clean CSV, the package can handle more complex cases.
+
+```python
+
+def simple_correlation_callback(
+    current_row: pd.Series, next_row: pd.Series
+) -> Tuple[bool, pd.Series]:
+    """Return the correlation between two rows."""
+
+    # All of the rows that have a subsequent correlated row are
+    # non-empty, and the subsequent correlated rows are always
+    # with the first cell empty.
+    if pd.isna(next_row.iloc[0]) and all(pd.notna(current_row)):
+        return True, pd.concat(
+            [
+                current_row,
+                pd.Series({"surname": next_row.iloc[-1]}),
+            ]
+        )
+
+    return False, current_row
+
+
+trimmer = CSVTrimmer(simple_correlation_callback)
+result = trimmer.trim(csv)
+```
+
+In this case, our CSV looked like this at the beginning:
+
+|    | region   | province        |
+|----|----------|-----------------|
+| 0  | Campania | Caserta          |
+| 1  |          | Ferrero          |
+| 2  | Liguria  | Imperia          |
+| 3  |          | Conti            |
+| 4  | Puglia   | Bari             |
+| 5  |          | Fabris           |
+| 6  | Sardegna | Medio Campidano  |
+| 7  |          | Conti            |
+| 8  | Lazio    | Roma             |
+| 9  |          | Fabbri           |
+
+
+And after the trimming, it will look like this:
+
+|    | region   | province        | surname |
+|----|----------|-----------------|---------|
+| 0  | Campania | Caserta          | Ferrero |
+| 1  | Liguria  | Imperia          | Conti   |
+| 2  | Puglia   | Bari             | Fabris  |
+| 3  | Sardegna | Medio Campidano  | Conti   |
+| 4  | Lazio    | Roma             | Fabbri  |
 
 ## More examples
 Here follow some examples of the package in action.
@@ -171,6 +208,10 @@ And after the trimming, it will look like this:
 | 2 | Puglia   | Bari           | Fabris  |
 | 3 | Sardegna | Medio Campidano| Conti   |
 | 4 | Lazio    | Roma           | Fabbri  |
+
+
+## How do I contribute to this package?
+If you have identified some new corner case that the package does not handle, or you have a suggestion for a new feature, feel free to open an issue. If you want to contribute with code, open an issue describing the feature you intend to add and submit a pull request.
 
 ## License
 This package is released under MIT license.
