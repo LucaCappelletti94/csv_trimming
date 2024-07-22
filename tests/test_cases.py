@@ -29,5 +29,9 @@ def test_document_collection():
 
         try:
             assert trimmed_csv.equals(expected_cleaned_csv)
-        except AssertionError:
+        except AssertionError as exp:
             trimmed_csv.to_csv("tests/trimmed.csv", index=False)
+            raise exp
+    
+    if os.path.exists("tests/trimmed.csv"):
+        os.remove("tests/trimmed.csv")

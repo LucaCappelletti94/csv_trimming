@@ -116,5 +116,49 @@ And after the trimming, it will look like this:
 | 3 | Campania | Napoli      | Belotti |
 | 4 | Liguria  | Savona      | Casini  |
 
+### Case with only padding
+Sometimes, the data entry clerk may start filling a table offsetted from the top-left corner, and export it with also
+empty cells all around. We call such cells "padding". The CSV Trimmer can detect and remove them.
+
+```python
+from csv_trimming import CSVTrimmer
+
+# Load your csv
+csv = pd.read_csv("path/to/csv.csv")
+
+# Instantiate the trimmer
+trimmer = CSVTrimmer(drop_padding=True)
+
+# And trim it
+trimmed_csv = trimmer.trim(csv)
+```
+
+For instance, your input CSV to clean up may look like this at the beginning:
+
+|   |   | region   | province       | surname |
+|---|---|----------|----------------|---------|
+| 0 |   |          |                |         |
+| 1 |   |          |                |         |
+| 2 |   | region   | province       | surname |
+| 3 |   | Campania | Caserta        | Ferrero |
+| 4 |   | Liguria  | Imperia        | Conti   |
+| 5 |   | Puglia   | Bari           | Fabris  |
+| 6 |   | Sardegna | Medio Campidano| Conti   |
+| 7 |   | Lazio    | Roma           | Fabbri  |
+| 8 |   |          |                |         |
+| 9 |   |          |                |         |
+| 10|   |          |                |         |
+| 11|   |          |                |         |
+
+And after the trimming, it will look like this:
+
+|   | region   | province       | surname |
+|---|----------|----------------|---------|
+| 0 | Campania | Caserta        | Ferrero |
+| 1 | Liguria  | Imperia        | Conti   |
+| 2 | Puglia   | Bari           | Fabris  |
+| 3 | Sardegna | Medio Campidano| Conti   |
+| 4 | Lazio    | Roma           | Fabbri  |
+
 ## License
 This package is released under MIT license.

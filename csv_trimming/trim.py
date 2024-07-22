@@ -169,11 +169,17 @@ class CSVTrimmer:
         the same schema can be repeated multiple times. This method removes
         the duplicated schema if it is detected.
         """
-        schema = csv.columns
-        for i, row in csv.iterrows():
-            if all(row == schema):
-                return csv.iloc[:i]
-        return csv
+        # We detect the indices of all the rows that are equal to
+        # the header, and then we drop them.
+        header = csv.columns
+
+        indices_to_drop = []
+
+        for idx, row in csv.iterrows():
+            if all(row == header):
+                indices_to_drop.append(idx)
+        
+        return csv.drop(index=indices_to_drop)
 
     def drop_empty_rows(self, csv: pd.DataFrame) -> pd.DataFrame:
         """Return DataFrame with removed empty columns.
@@ -270,6 +276,7 @@ class CSVTrimmer:
     def trim(
         self,
         csv: pd.DataFrame,
+        drop_padding: bool = True,
         drop_duplicated_schema: bool = True,
     ) -> pd.DataFrame:
         """Return sanitized version of given dataframe.
@@ -278,6 +285,8 @@ class CSVTrimmer:
         ----------------------------
         csv: pd.DataFrame,
             The dataframe to clean up.
+        drop_padding: bool = True,
+            Whether to drop padding.
         drop_duplicated_schema: bool = True,
             Whether to drop duplicated schemas.
 
@@ -287,8 +296,9 @@ class CSVTrimmer:
         """
         logger.info("Removing extra spaces within cells.")
         csv = self.trim_spaces(csv)
-        logger.info("Removing empty space (or NaNs).")
-        csv = self.trim_padding(csv)
+        if drop_padding:
+            logger.info("Removing empty space (or NaNs).")
+            csv = self.trim_padding(csv)
         logger.info("Removing empty space rows.")
         csv = self.drop_empty_rows(csv)
         logger.info("Restoring detected header.")
