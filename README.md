@@ -1,4 +1,4 @@
-# CSV Trimming
+# ✂️ CSV Trimming
 
 [![PyPI](https://badge.fury.io/py/csv-trimming.svg)](https://badge.fury.io/py/csv-trimming)
 [![python](https://img.shields.io/pypi/pyversions/csv-trimming)](https://pypi.org/project/csv-trimming/)
