@@ -1,14 +1,15 @@
 """Submodule for setting up the logger for the csv_trimming package."""
+
 import sys
 import logging
 
 # Create the logger
 logger = logging.getLogger(__name__)
 # Change the levels names to that they are 4 chars long
-logging.addLevelName(logging.DEBUG, 'DEBG')
-logging.addLevelName(logging.WARNING, 'WARN')
-logging.addLevelName(logging.ERROR, 'ERRO')
-logging.addLevelName(logging.CRITICAL, 'CRIT')
+logging.addLevelName(logging.DEBUG, "DEBG")
+logging.addLevelName(logging.WARNING, "WARN")
+logging.addLevelName(logging.ERROR, "ERRO")
+logging.addLevelName(logging.CRITICAL, "CRIT")
 # Set the default log level
 logger.setLevel(logging.INFO)
 # Set the format of the loger
