@@ -160,6 +160,21 @@ class CSVTrimmer:
         nan_mask = csv.map(is_nan).all(axis=0)
         return csv[csv.columns[~nan_mask]]
 
+    def drop_duplicated_schema(self, csv: pd.DataFrame) -> pd.DataFrame:
+        """Return DataFrame with removed duplicated schema.
+
+        Implementative details
+        ---------------------------
+        In some cases, such as when multiple CSVs are chained in a poor manner,
+        the same schema can be repeated multiple times. This method removes
+        the duplicated schema if it is detected.
+        """
+        schema = csv.columns
+        for i, row in csv.iterrows():
+            if all(row == schema):
+                return csv.iloc[:i]
+        return csv
+
     def drop_empty_rows(self, csv: pd.DataFrame) -> pd.DataFrame:
         """Return DataFrame with removed empty columns.
 
@@ -252,13 +267,19 @@ class CSVTrimmer:
 
         return pd.DataFrame(new_rows)
 
-    def trim(self, csv: pd.DataFrame) -> pd.DataFrame:
+    def trim(
+        self,
+        csv: pd.DataFrame,
+        drop_duplicated_schema: bool = True,
+    ) -> pd.DataFrame:
         """Return sanitized version of given dataframe.
 
         Parameters
         ----------------------------
         csv: pd.DataFrame,
             The dataframe to clean up.
+        drop_duplicated_schema: bool = True,
+            Whether to drop duplicated schemas.
 
         Returns
         ----------------------------
@@ -278,6 +299,10 @@ class CSVTrimmer:
         csv = self.normalize_correlated_rows(csv)
         logger.info("Dropping empty columns.")
         csv = self.drop_empty_columns(csv)
+        if drop_duplicated_schema:
+            logger.info("Dropping rows containing duplicated schema.")
+            csv = self.drop_duplicated_schema(csv)
+
         csv = csv.reset_index(drop=True)
         csv.index.name = None
         csv.columns.name = None
