@@ -1,4 +1,5 @@
 """Test the trim method with correlation."""
+
 from typing import Tuple
 import pandas as pd
 from csv_trimming import CSVTrimmer
@@ -13,6 +14,8 @@ def correlation_callback(
     --------------------------
     current_row: pd.Series,
         The current row.
+    next_row: pd.Series,
+        The next row.
     """
     for value in current_row:
         if value == "Piemonte":
