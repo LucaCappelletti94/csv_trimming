@@ -14,3 +14,4 @@ test_do_not_upload.py
 *.egg-info
 build
 .pytest_cache
+dist
