@@ -7,11 +7,7 @@
 [![Github Actions](https://github.com/LucaCappelletti94/csv_trimming/actions/workflows/python.yml/badge.svg)](https://github.com/LucaCappelletti94/csv_trimming/actions/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0968ff39b133475da3a9c528b8ae2c9d)](https://app.codacy.com/gh/LucaCappelletti94/csv_trimming/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-Package python to remove common ugliness from real-world csv-like file.
-
-When working with lots of CSVs from different companies or even worse
-
-This package is to fix that kind of issues.
+[CSV Trimming](https://github.com/LucaCappelletti94/csv_trimming) is a Python package designed to take messy CSVs — the kind you get from scraping websites, legacy systems, or poorly managed data — and transform them into clean, well-formatted CSVs with just one line of code. No need for complex setups or large language models. It’s simple, straightforward, and generally gets the job done.
 
 ## How do I install this package?
 
