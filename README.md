@@ -226,6 +226,27 @@ And after the trimming, it will look like this:
 | 4 | Lazio    | Roma           | Fabbri  |
 
 
+## Command Line Interface
+The package also provides a command line interface to trim CSVs. It comes installed with the `setup.py` of the package, therefore after having pip installed the package, you can immediately use it from the command line.
+
+You can use it by running the following command:
+
+```shell
+csv-trim tests/documents/noisy/sicilia.csv tests/documents/noisy/sicilia_trimmed.csv
+```
+
+It supports the following options to keep it from attempting some trimmings:
+
+- `--keep-padding`: Do not attempt to remove padding.
+- `--keep-duplicated-schema`: Do not attempt to remove duplicated schemas.
+- `--no-restore-header`: Do not attempt to restore the header.
+
+For instance:
+    
+```shell
+csv-trim tests/documents/noisy/sicilia.csv tests/documents/noisy/sicilia_trimmed.csv --keep-padding
+```
+
 ## How do I contribute to this package?
 If you have identified some new corner case that the package does not handle, or you have a suggestion for a new feature, feel free to open an issue. If you want to contribute with code, open an issue describing the feature you intend to add and submit a pull request.
 
