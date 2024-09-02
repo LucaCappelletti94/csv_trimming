@@ -15,3 +15,4 @@ test_do_not_upload.py
 build
 .pytest_cache
 dist
+tests/output.tmp.csv

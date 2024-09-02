@@ -65,4 +65,9 @@ setup(
         "numpy",
     ],
     extras_require=extras,
+    entry_points={
+        'console_scripts': [
+            'csv-trim = csv_trimming.cli:main',  # CLI command and entry point
+        ],
+    },
 )
