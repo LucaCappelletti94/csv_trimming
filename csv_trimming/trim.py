@@ -3,27 +3,13 @@
 from typing import Tuple, Any, Optional, Callable
 import pandas as pd
 import numpy as np
+from ugly_csv_generator.utils.add_nan_like_artefacts import (
+    NAN_LIKE_ARTIFACTS,
+    UNICODE_NAN_LIKE_ARTIFACTS,
+)
 from csv_trimming.logger import logger
 
-NAN_LIKE = (
-    "",
-    0,
-    "#RIF!",
-    "#N/D",
-    None,
-    "\n",
-    "\r",
-    "NaN",
-    "?",
-    "_",
-    "Nan",
-    "/",
-    " ",
-    "-",
-    "0",
-    "NA",
-    ".",
-)
+NAN_LIKE = NAN_LIKE_ARTIFACTS + UNICODE_NAN_LIKE_ARTIFACTS
 
 
 def is_nan(candidate: Any) -> bool:
@@ -178,7 +164,7 @@ class CSVTrimmer:
         for idx, row in csv.iterrows():
             if all(row == header):
                 indices_to_drop.append(idx)
-        
+
         return csv.drop(index=indices_to_drop)
 
     def drop_empty_rows(self, csv: pd.DataFrame) -> pd.DataFrame:

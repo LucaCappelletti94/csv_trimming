@@ -63,6 +63,7 @@ setup(
         "pandas",
         "scipy",
         "numpy",
+        "ugly_csv_generator>=1.1.4"
     ],
     extras_require=extras,
     entry_points={
