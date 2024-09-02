@@ -21,10 +21,11 @@ pip install csv_trimming
 The package is very simple to use, just load your CSV and pass it to the trimmer.
 
 ```python
+import pandas as pd
 from csv_trimming import CSVTrimmer
 
 # Load your csv
-csv = pd.read_csv("path/to/csv.csv")
+csv = pd.read_csv("tests/documents/noisy/sicilia.csv")
 # Instantiate the trimmer
 trimmer = CSVTrimmer()
 # And trim it
@@ -64,11 +65,29 @@ Sometimes, the CSVs you are working with may have a row correlation, meaning par
 You just need to provide a function that defines which rows are correlated, and the CSV Trimmer will take care of the rest. While in this example we are using a rather simple function and a relatively clean CSV, the package can handle more complex cases.
 
 ```python
+from typing import Tuple
+import pandas as pd
+from csv_trimming import CSVTrimmer
 
 def simple_correlation_callback(
-    current_row: pd.Series, next_row: pd.Series
+    current_row: pd.Series,
+    next_row: pd.Series
 ) -> Tuple[bool, pd.Series]:
-    """Return the correlation between two rows."""
+    """Return the correlation between two rows.
+    
+    Parameters
+    ----------
+    current_row : pd.Series
+        The current row being analyzed in the DataFrame.
+    next_row : pd.Series
+        The next row in the DataFrame.
+
+    Returns
+    -------
+    Tuple[bool, pd.Series]
+        A tuple with a boolean indicating if the rows are correlated
+        and a Series with the merged row.
+    """
 
     # All of the rows that have a subsequent correlated row are
     # non-empty, and the subsequent correlated rows are always
@@ -83,7 +102,7 @@ def simple_correlation_callback(
 
     return False, current_row
 
-
+csv = pd.read_csv("tests/test.csv")
 trimmer = CSVTrimmer(simple_correlation_callback)
 result = trimmer.trim(csv)
 ```
@@ -122,14 +141,15 @@ Sometimes, when chaining multiple CSVs in a poor manner, you may end up with dup
 The CSV Trimmer detects rows that match the detected header, and it can (optionally) remove them.
 
 ```python
+import pandas as pd
 from csv_trimming import CSVTrimmer
 
 # Load your csv
-csv = pd.read_csv("path/to/csv.csv")
+csv = pd.read_csv("tests/documents/noisy/duplicated_schema.csv")
 # Instantiate the trimmer
-trimmer = CSVTrimmer(drop_duplicated_schema=True)
+trimmer = CSVTrimmer()
 # And trim it
-trimmed_csv = trimmer.trim(csv)
+trimmed_csv = trimmer.trim(csv, drop_duplicated_schema=True)
 # That's it!
 ```
 
@@ -165,16 +185,17 @@ Sometimes, the data entry clerk may start filling a table offsetted from the top
 empty cells all around. We call such cells "padding". The CSV Trimmer can detect and remove them.
 
 ```python
+import pandas as pd
 from csv_trimming import CSVTrimmer
 
 # Load your csv
-csv = pd.read_csv("path/to/csv.csv")
+csv = pd.read_csv("tests/documents/noisy/padding.csv")
 
 # Instantiate the trimmer
-trimmer = CSVTrimmer(drop_padding=True)
+trimmer = CSVTrimmer()
 
 # And trim it
-trimmed_csv = trimmer.trim(csv)
+trimmed_csv = trimmer.trim(csv, drop_padding=True)
 ```
 
 For instance, your input CSV to clean up may look like this at the beginning:

@@ -29,6 +29,7 @@ __version__ = find_version("csv_trimming", "__version__.py")
 test_deps =[
     "pytest",
     "pytest-cov",
+    "pytest-readme",
     "tqdm",
     "validate_version_code",
     "random_csv_generator",
