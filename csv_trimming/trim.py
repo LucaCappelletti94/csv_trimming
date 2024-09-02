@@ -7,9 +7,14 @@ from ugly_csv_generator.utils.add_nan_like_artefacts import (
     NAN_LIKE_ARTIFACTS,
     UNICODE_NAN_LIKE_ARTIFACTS,
 )
+from ugly_csv_generator.utils.add_random_spaces import (
+    SPACES,
+    UNICODE_SPACES
+)
 from csv_trimming.logger import logger
 
 NAN_LIKE = NAN_LIKE_ARTIFACTS + UNICODE_NAN_LIKE_ARTIFACTS
+SPACE_LIKE = sorted(SPACES + UNICODE_SPACES, key=lambda x: -len(x))
 
 
 def is_nan(candidate: Any) -> bool:
@@ -35,8 +40,6 @@ def is_nan(candidate: Any) -> bool:
 
 class CSVTrimmer:
     """Class handling the cleaning up of malformed CSVs using heuristics."""
-
-    SPACES = ("\n\r", "\n", " ")
 
     def __init__(
         self,
@@ -194,8 +197,12 @@ class CSVTrimmer:
         ----------------------------
         String without duplicated spaces.
         """
-        for char in CSVTrimmer.SPACES:
-            string = " ".join([e for e in string.split(char) if e])
+        old_string = None
+        while old_string != string:
+            old_string = string
+            for char in SPACE_LIKE:
+                if char in string:
+                    string = " ".join(e for e in string.split(char) if e)
         return string.strip()
 
     def trim_spaces(self, csv: pd.DataFrame) -> pd.DataFrame:
