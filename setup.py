@@ -60,7 +60,7 @@ setup(
     tests_require=test_deps,
     python_requires='>=3.9',
     install_requires=[
-        "pandas",
+        "pandas>=2.1.0",
         "scipy",
         "numpy",
         "ugly_csv_generator>=1.1.4"
