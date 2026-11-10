@@ -68,6 +68,9 @@ class CSVTrimmer:
         -------------------------------
         Boolean array with only boolean True attached to array sides.
         """
+        # Work on a private copy: callers may pass read-only arrays
+        # (e.g. Series.values views), which cannot be masked in place.
+        mask = np.array(mask, dtype=bool)
         left, right = 0, 0
         for left, val in enumerate(mask):
             if not val:
